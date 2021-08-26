@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dependent Dropdown in Django</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body style="background-color:plum;">
+<br><br><br><br>
+<h2 style="text-align:center;">Booking Form</h2><br>
+<div class="container">
+<form action ="result/" method="post" id="bookingForm" data-taluks-url="{% url 'ajax_load_taluks' %}">
+    {% csrf_token %}
+    <div class="card" style="align:center;">
+  <div class="card-body" style="align:center;">
+      <div class="form-group">
+          {{form.as_p}}
+      </div>
+      <br>
+       {% if user.is_authenticated %}
+      <input type="submit" value="Submit">
+      {% else %}
+      <h3>Please <a href="/register/"> Register </a> or <a href="/login/">Login</a></h3>
+      {% endif %}
+  </div>
+</div>
+
+
+</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_district").change(function () {
+        const url = $("#bookingForm").attr("data-taluks-url");  // get the url of the `load_cities` view
+        const districtId = $(this).val();  // get the selected country ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'district_id': districtId       // add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_taluk").html(data);  // replace the contents of the city input with the data that came from the server
+                /*
+
+                let html_data = '<option value="">---------</option>';
+                data.forEach(function (taluk) {
+                    html_data += `<option value="${taluk.id}">${taluk.name}</option>`
+                });
+                console.log(html_data);
+                $("#id_taluk").html(html_data);
+
+                */
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>
